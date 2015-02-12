@@ -6,7 +6,7 @@ var request = require('request'),
  	action,
  	swift_auth,
 	envVariables = [],
-	missingEnvVariables = [];node
+	missingEnvVariables = [];
 
 envVariables.push({name:'OS_USERNAME',value:process.env.OS_USERNAME});
 envVariables.push({name:'OS_PASSWORD',value:process.env.OS_PASSWORD});

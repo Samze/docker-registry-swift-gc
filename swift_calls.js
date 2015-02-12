@@ -35,7 +35,7 @@ module.exports = function(OS_SWIFT_CONTAINER_URL, OS_SWIFT_TOKEN){
 		return deferred.promise;
 	}
 
-	function getListOfImagesDirect(marker_image){
+	function getListOfResultsDirect(marker_image){
 		var url = OS_SWIFT_CONTAINER_URL + (marker_image ? '?marker=' + encodeURI(marker_image) : '');
 		return requestPromise('GET',url)
 			.then(function(body){
@@ -45,7 +45,7 @@ module.exports = function(OS_SWIFT_CONTAINER_URL, OS_SWIFT_TOKEN){
 				 //Documented number of max results. http://docs.openstack.org/api/openstack-object-storage/1.0/content/large-lists.html
 				if(results.length >= 10000) {
 					var lastResult = results[results.length - 1];
-					return getListOfImages(lastResult)
+					return getListOfResults(lastResult)
 					.then(function(recursiveResult){
 						var allResults = results.concat(recursiveResult);
 						return allResults;
@@ -56,10 +56,10 @@ module.exports = function(OS_SWIFT_CONTAINER_URL, OS_SWIFT_TOKEN){
 			});
 	}
 
-	var getListOfImages = memoize(getListOfImagesDirect);
+	var getListOfResults = memoize(getListOfResultsDirect);
 
 	module.getAllImages = function(){
-		return getListOfImages()
+		return getListOfResults()
 		.then(function(imageList){
 			return imageList.filter(function(item){
 				var imageMatch = item.match(imageRegex);
@@ -74,7 +74,7 @@ module.exports = function(OS_SWIFT_CONTAINER_URL, OS_SWIFT_TOKEN){
 	};
 
 	module.getListOfTaggedImages = function(){
-		return getListOfImages()
+		return getListOfResults()
 		.then(function(imageList){
 			return imageList.filter(function(item){
 				if(item.indexOf('tag_') > -1){
