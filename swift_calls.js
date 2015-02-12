@@ -1,3 +1,5 @@
+'use strict';
+
 var request = require('request'),
 	memoize = require('memoizee'),
  	Q = require('q'),

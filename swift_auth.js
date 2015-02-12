@@ -1,5 +1,4 @@
-
-/** This script is one-time-use to cloudant to add org_uuid to the namespace docs from user. */
+'use strict';
 
 var request = require('request'),
  	Q = require('q'),

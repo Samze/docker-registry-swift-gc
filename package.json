@@ -1,13 +1,13 @@
 {
   "name": "docker-registry-swift-gc",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "A quick utility to perform garbage collection on a docker registry attached to swift object storage.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "sam.gunaratne@uk.ibm.com",
+  "license": "Apache 2.0",
   "dependencies": {
     "memoizee": "^0.3.8",
     "q": "^1.1.2",
