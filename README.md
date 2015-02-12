@@ -1,16 +1,17 @@
 # docker-registry-swift-gc
 A quick utility to query and perform garbage collection on a [docker registry](https://github.com/docker/docker-registry) which has been attached to [swift object storage](http://docs.openstack.org/developer/swift/) using [docker-registry-driver-swift](https://github.com/bacongobbler/docker-registry-driver-swift).
 
-This allows you to query the following docker registry types, **repository tags**, **all image layers**, **unused image layers** and **used image layers**.
+This allows you to query the following docker registry types, **repository tags**, **all image layers**, **unused image layers** and **used image layers**. It also will allow you to perform garbage collection on your storage (**TODO**).
 
-# Installation
+
+## Installation
 ```sh
 git clone https://github.com/Samze/docker-registry-swift-gc.git
 cd docker-registry-swift-gc
 npm install
 ```
 
-# Setup
+## Setup
 This uses the Identity Service authorization specified here: http://docs.openstack.org/api/openstack-object-storage/1.0/content/examples.html#get_auth_token_keystone
 
 Setup the following environment variables.
@@ -23,7 +24,7 @@ export CONTAINER= # The container that the Docker registry is pointing to.
 
 ```
 
-# Usage
+## Usage
 
 Get summary information of your docker-registry swift storage.
 ```sh
