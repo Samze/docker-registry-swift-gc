@@ -1,5 +1,5 @@
 # docker-registry-swift-gc
-A quick utility to perform garbage collection on a docker registry attached to swift object storage.
+A quick utility to query and perform garbage collection on a docker registry attached to swift object storage.
 
 This allows you to query the following docker registry types, **repository tags**, **all image layers**, **unused image layers** and **used image layers**.
 
