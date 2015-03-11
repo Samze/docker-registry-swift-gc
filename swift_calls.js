@@ -58,6 +58,10 @@ module.exports = function(OS_SWIFT_CONTAINER_URL, OS_SWIFT_TOKEN){
 
 	var getListOfResults = memoize(getListOfResultsDirect);
 
+	module.getAllContent = function(){
+		return getListOfResults();
+	}
+
 	module.getAllImages = function(){
 		return getListOfResults()
 		.then(function(imageList){

@@ -41,8 +41,16 @@ swift_auth()
 
 	var OS_SWIFT_CONTAINER_URL = OS_SWIFT_URL + '/' + process.env.CONTAINER;
 	var swiftCalls = require('./swift_calls.js')(OS_SWIFT_CONTAINER_URL,OS_SWIFT_TOKEN);
+	var singleArg = false;
 
 	switch (process.argv[2]) {
+		case 'all':
+			swiftCalls.getAllContent()
+			.then(function(all){
+				console.log(all);
+			});
+			singleArg = true;
+			break;
 		case 'summary':
 			swiftCalls.getListOfTaggedImages()
 			.then(function(taggedImages){
@@ -58,6 +66,7 @@ swift_auth()
 					});
 				});
 			});
+			singleArg = true;
 			break;
 		case 'delete_unused':
 			//TODO
@@ -74,7 +83,7 @@ swift_auth()
 			break;
 	}
 
-	if(process.argv[2] != 'summary'){
+	if(!singleArg){
 		switch (process.argv[3]) {
 			case 'all_images':
 				swiftCalls.getAllImages()
