@@ -31,6 +31,7 @@ swift_auth()
 .then(function(result){
 	var OS_SWIFT_URL = result.url;
 	var OS_SWIFT_TOKEN = result.token;
+	
 
 	if(OS_SWIFT_URL && OS_SWIFT_URL){
 		console.log('Successfully Authenticated');
@@ -40,7 +41,8 @@ swift_auth()
 	}
 
 	var OS_SWIFT_CONTAINER_URL = OS_SWIFT_URL + '/' + process.env.CONTAINER;
-	var swiftCalls = require('./swift_calls.js')(OS_SWIFT_CONTAINER_URL,OS_SWIFT_TOKEN);
+	var CONTAINER = process.env.CONTAINER;
+	var swiftCalls = require('./swift_calls.js')(OS_SWIFT_CONTAINER_URL,OS_SWIFT_TOKEN, OS_SWIFT_URL, CONTAINER);
 	var singleArg = false;
 
 	switch (process.argv[2]) {
@@ -70,7 +72,14 @@ swift_auth()
 			break;
 		case 'delete_unused':
 			//TODO
-			process.exit(1);			
+			
+			console.log('hello')
+			swiftCalls.deleteUnusedImages()
+			.then(function(deleteStatus){
+				console.log('Delete returned with: ' + deleteStatus);
+			})
+	
+			singleArg = true;
 			break;
 		case 'list':
 			action = function(list){ console.log(list);}

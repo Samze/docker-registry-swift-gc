@@ -13,17 +13,18 @@ String.prototype.endsWith = function(suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
 };
 
-module.exports = function(OS_SWIFT_CONTAINER_URL, OS_SWIFT_TOKEN){
+module.exports = function(OS_SWIFT_CONTAINER_URL, OS_SWIFT_TOKEN, OS_SWIFT_URL, CONTAINER){
 	var module = {};
 
-	function requestPromise(method,uri){
+	function requestPromise(method,uri,body){
 		var deferred = Q.defer();
 
 		request(
 		{
 			method: method,
 			uri: uri,
-			headers: {'X-Auth-Token':OS_SWIFT_TOKEN}
+			headers: {'X-Auth-Token':OS_SWIFT_TOKEN, 'Content-Type': 'text/plain'},
+			body: body
 		}, function(error,response,body){
 			if(!error && response.statusCode == 200){
 				deferred.resolve(body);
@@ -98,8 +99,38 @@ module.exports = function(OS_SWIFT_CONTAINER_URL, OS_SWIFT_TOKEN){
 	function getImagesForTag(tag){
 		return requestPromise('GET', OS_SWIFT_CONTAINER_URL + '/' + tag)
 		.then(function(image){
-			return getAncestorImagesForImage(image);
+			return getAncestorImagesForImage(image)
+
 		});
+	}
+
+	module.deleteUnusedImages= function(){
+		//uses SWIFT bulk delete facility
+		console.log('enter')
+		return module.getUnusedImages()
+		.then(function(images){
+			console.log('post get unused');
+			var url = OS_SWIFT_URL + '?bulk-delete=true';
+			var body = '';
+			
+			//Each image has 4 objects that need to be deleted
+			images.forEach(function(image){
+				
+				body += CONTAINER + '/registry/images/' + image + '/_checksum' + '\n';
+				body += CONTAINER + '/registry/images/' + image + '/ancestry' + '\n';
+				body += CONTAINER + '/registry/images/' + image + '/json' + '\n';
+				body += CONTAINER + '/registry/images/' + image + '/layer' + '\n';
+			})
+
+			
+			return requestPromise('POST', url, body)
+			.then(function(body){
+				//Return message body from swift which gives summary of the delete.
+				return body
+			}, function(error){
+				return error
+			})
+		}) 
 	}
 
 	module.getListOfUsedImages = function(){
@@ -109,7 +140,6 @@ module.exports = function(OS_SWIFT_CONTAINER_URL, OS_SWIFT_TOKEN){
 			var tagImagesPromise = tags.map(function(tag){
 				return getImagesForTag(tag);
 			});
-
 			return Q.all(tagImagesPromise)
 			.then(function(allImagesForTag){
 				var imageResultArray = [];
@@ -129,7 +159,11 @@ module.exports = function(OS_SWIFT_CONTAINER_URL, OS_SWIFT_TOKEN){
 				}
 
 				return imageResultArray;
+			}, function(err){
+				console.log("Error:")
+				console.log(err);
 			});
+
 		})
 	};
 
